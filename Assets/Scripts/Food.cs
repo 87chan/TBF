@@ -13,4 +13,9 @@ public class Food : MonoBehaviour {
 	void Update () {
 		
 	}
+
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		Destroy(gameObject);
+	}
 }
