@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Tadpole : MonoBehaviour {
 
@@ -21,15 +22,49 @@ public bool bPlayer01 = true;
 	// 弾かれた際の加速度
 	static float POP_ACCEL = 10f;
 
-	int Level = 0;
-	bool bSelfMove = false;
+	int Level = 1;
+	bool bSelfMove;
 	Vector3 StartPos;
 	Vector3 EndPos;
 	Vector3 Direction;
 	float CurrentSpeed;
 
+	private void UpdateFoodNumText()
+	{
+		Text text = this.gameObject.GetComponent<Text>();
+		text.text = (Level - 1).ToString();
+	}
+
+	public void SetLevel(int level)
+	{
+		Level = level;
+		this.UpdateFoodNumText();
+	}
+
+	public void LevelUp(int upNum = 1)
+	{
+		SetLevel(Mathf.Clamp((Level + upNum), 0, MAX_LEVEL));
+	}
+
+	public void LevelDown(int downNum = 1)
+	{
+		SetLevel(Mathf.Clamp((Level - downNum), 0, MAX_LEVEL));
+	}
+
+	public void AddAccel(float value)
+	{
+		CurrentSpeed += value;
+		CurrentSpeed = Mathf.Clamp(CurrentSpeed,0,MAX_SPEED);
+	}
+
+	public void SetDirection(Vector3 direction)
+	{
+		Direction = direction;
+	}
+
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 		
 	}
 
@@ -72,29 +107,6 @@ public bool bPlayer01 = true;
         velocity = CurrentSpeed * Direction;
         transform.position += velocity;
     }
-
-	public void LevelUp(int upNum = 1)
-	{
-		Level += upNum;
-		Level = Mathf.Clamp(Level,0,MAX_LEVEL);
-	}
-
-	public void LevelDown(int downNum = 1)
-	{
-		Level -= downNum;
-		Level = Mathf.Clamp(Level,0,MAX_LEVEL);
-	}
-
-	public void AddAccel(float value)
-	{
-		CurrentSpeed += value;
-		CurrentSpeed = Mathf.Clamp(CurrentSpeed,0,MAX_SPEED);
-	}
-
-	public void SetDirection(Vector3 direction)
-	{
-		Direction = direction;
-	}
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
