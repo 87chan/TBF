@@ -19,8 +19,9 @@ public bool bPlayer01 = true;
 	// 速度の最大値
 	static float MAX_SPEED = 10f;
 
-	// 弾かれた際の加速度
-	static float POP_ACCEL = 10f;
+    // 弾かれた際の加速度
+    static float POP_ACCEL_ACTIVE = 5f;
+    static float POP_ACCEL_PASSIVE = 10f;
 
 	static float KOCKBACK_TIME = 0.5f;
 
@@ -62,8 +63,12 @@ public bool bPlayer01 = true;
 		SetLevel(Mathf.Clamp((Level - downNum), 0, MAX_LEVEL));
 	}
 
-	public void AddAccel(float value)
+	public void AddAccel(float value, bool bReset = false)
 	{
+		if(bReset)
+		{
+			CurrentSpeed = 0.0f;
+		}
 		CurrentSpeed += value;
 		CurrentSpeed = Mathf.Clamp(CurrentSpeed,0,MAX_SPEED);
 	}
@@ -151,37 +156,47 @@ public bool bPlayer01 = true;
                 {
 					bool bSpawnFood = false;
 					Vector3 spawnPosition = new Vector3();
+					Tadpole activeTadpole = null;
 
                     // よりレベルの高い方を下げる
                     // 同レベルの場合は下がらない
                     if (otherTadPole.Level == this.Level)
                     {
                     }
-                    else if (otherTadPole.Level < Level)
+                    else if (otherTadPole.Level < this.Level)
                     {
                         this.LevelDown();
 						bSpawnFood = true;
 						spawnPosition = this.transform.position;
+						activeTadpole = otherTadPole;
                     }
                     else
                     {
                         otherTadPole.LevelDown();
                         bSpawnFood = true;
                         spawnPosition = otherTadPole.transform.position;
+						activeTadpole = this;
                     }
 
+					float popAccel = 0.0f;
                     Vector3 direction = otherTadPole.transform.position - this.transform.position;
                     direction.Normalize();
 
                     // ヒットしてきた対象
                     otherTadPole.SetDirection(direction);
-                    otherTadPole.AddAccel(POP_ACCEL);
                     otherTadPole.KockBack();
+
+					popAccel = (activeTadpole == null)? POP_ACCEL_ACTIVE :
+					((activeTadpole == otherTadPole)? POP_ACCEL_ACTIVE: POP_ACCEL_PASSIVE);
+					otherTadPole.AddAccel(popAccel, true);
 
                     // 自分自身
                     this.SetDirection(-direction);
-                    this.AddAccel(POP_ACCEL);
                     this.KockBack();
+
+					popAccel = (activeTadpole == null)? POP_ACCEL_ACTIVE :
+					((activeTadpole == this)? POP_ACCEL_ACTIVE: POP_ACCEL_PASSIVE);
+					this.AddAccel(popAccel, true);
 
 					// エサの配置
 					if(bSpawnFood)
