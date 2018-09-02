@@ -30,7 +30,6 @@ public bool bPlayer01 = true;
 		{
 			StartPos = AppUtil.GetTouchPosition();
 
-			Debug.Log(StartPos);
 			float height = Screen.height * 0.5f;
 			if((StartPos.y >= height && bPlayer01)
 			|| (StartPos.y < height && !bPlayer01))
@@ -59,7 +58,7 @@ public bool bPlayer01 = true;
 		if(bAdvance)
 		{
 			CurrentSpeed -= inverseAccel;
-			// Debug.Log(CurrentSpeed);
+
 			velocity = CurrentSpeed * Direction;
 
 			if(CurrentSpeed >= 0)
