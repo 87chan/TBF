@@ -9,6 +9,7 @@ public bool bPlayer01 = true;
 	static int MaxLevel = 3;
 	static float AdvanceAccel = 10f;
 	static float InverseAccel = 0.25f;
+	static float SpeedMax = 10f;
 
 	int Level = 0;
 	bool bSelfMove = false;
@@ -56,7 +57,8 @@ public bool bPlayer01 = true;
 			transform.rotation = Quaternion.Euler(0,0,deg);
 			
 			bAdvance = true;
-			CurrentSpeed = AdvanceAccel;
+			CurrentSpeed += AdvanceAccel;
+			CurrentSpeed = Mathf.Clamp(CurrentSpeed,0,SpeedMax);
 		}
 
 		if(bAdvance)
