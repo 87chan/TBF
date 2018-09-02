@@ -6,6 +6,10 @@ public class Tadpole : MonoBehaviour {
 
 public bool bPlayer01 = true;
 
+	static int MaxLevel = 3;
+	static float AdvanceAccel = 10f;
+	static float InverseAccel = 0.25f;
+
 	int Level = 0;
 	bool bSelfMove = false;
 	Vector3 StartPos;
@@ -13,8 +17,6 @@ public bool bPlayer01 = true;
 	bool bAdvance;
 	Vector3 Direction;
 	float CurrentSpeed;
-	static float advanceAccel = 10f;
-	static float inverseAccel = 0.25f;
 
 	// Use this for initialization
 	void Start () {
@@ -54,12 +56,12 @@ public bool bPlayer01 = true;
 			transform.rotation = Quaternion.Euler(0,0,deg);
 			
 			bAdvance = true;
-			CurrentSpeed = advanceAccel;
+			CurrentSpeed = AdvanceAccel;
 		}
 
 		if(bAdvance)
 		{
-			CurrentSpeed -= inverseAccel;
+			CurrentSpeed -= InverseAccel;
 
 			velocity = CurrentSpeed * Direction;
 
@@ -77,5 +79,36 @@ bAdvance = false;
 	public void LevelUp(int upNum = 1)
 	{
 		Level += upNum;
+		Level = Mathf.Clamp(Level,0,MaxLevel);
+	}
+
+	public void LevelDown(int downNum = 1)
+	{
+		Level -= downNum;
+		Level = Mathf.Clamp(Level,0,MaxLevel);
+	}
+
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		if(gameObject && other)
+		{
+			Tadpole otherTadPole = other.gameObject.GetComponent<Tadpole>();
+		if(otherTadPole)
+		{
+			// よりレベルの高い方を下げる
+			// 同レベルの場合は下がらない
+			if(otherTadPole.Level == this.Level)
+			{
+			}
+			else if(otherTadPole.Level < Level)
+			{
+				this.LevelDown();
+			}
+			else
+			{
+				otherTadPole.LevelDown();
+			}
+		}
+		}
 	}
 }
