@@ -33,6 +33,8 @@ public bool bPlayer01 = true;
 	float CurrentSpeed;
 	float CurrentKockBackTime;
 
+	public bool CheckKockBack() { return bKockBack; }
+
 	private void UpdateFoodNumText()
 	{
 		Text text = this.gameObject.GetComponent<Text>();
@@ -126,7 +128,7 @@ public bool bPlayer01 = true;
 
 	void UpdateKockBack()
 	{
-		if(bKockBack)
+		if(this.CheckKockBack())
 		{
 			CurrentKockBackTime += Time.deltaTime;
 			if(CurrentKockBackTime >= KOCKBACK_TIME)
@@ -145,7 +147,7 @@ public bool bPlayer01 = true;
             if (otherTadPole)
             {
 				// ノックバック中は処理しない
-                if (!otherTadPole.bKockBack && !this.bKockBack)
+                if (!otherTadPole.CheckKockBack() && !this.CheckKockBack())
                 {
                     // よりレベルの高い方を下げる
                     // 同レベルの場合は下がらない

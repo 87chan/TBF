@@ -19,7 +19,7 @@ public class Food : MonoBehaviour {
 		if(gameObject && other)
 		{
 		Tadpole tadPole = other.gameObject.GetComponent<Tadpole>();
-		if(tadPole)
+		if(tadPole && !tadPole.CheckKockBack())
 		{
 			tadPole.LevelUp();
 			Destroy(gameObject);
