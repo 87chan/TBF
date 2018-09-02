@@ -149,6 +149,9 @@ public bool bPlayer01 = true;
 				// ノックバック中は処理しない
                 if (!otherTadPole.CheckKockBack() && !this.CheckKockBack())
                 {
+					bool bSpawnFood = false;
+					Vector3 spawnPosition = new Vector3();
+
                     // よりレベルの高い方を下げる
                     // 同レベルの場合は下がらない
                     if (otherTadPole.Level == this.Level)
@@ -157,10 +160,14 @@ public bool bPlayer01 = true;
                     else if (otherTadPole.Level < Level)
                     {
                         this.LevelDown();
+						bSpawnFood = true;
+						spawnPosition = this.transform.position;
                     }
                     else
                     {
                         otherTadPole.LevelDown();
+                        bSpawnFood = true;
+                        spawnPosition = otherTadPole.transform.position;
                     }
 
                     Vector3 direction = otherTadPole.transform.position - this.transform.position;
@@ -175,6 +182,13 @@ public bool bPlayer01 = true;
                     this.SetDirection(-direction);
                     this.AddAccel(POP_ACCEL);
                     this.KockBack();
+
+					// エサの配置
+					if(bSpawnFood)
+                    {
+                        Food food = GameObject.Find("GameMain").GetComponent<GameMain>().Food;
+                        GameObject.Instantiate(food, spawnPosition, Quaternion.identity);
+                    }
                 }
             }
         }

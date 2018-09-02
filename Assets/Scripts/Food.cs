@@ -19,6 +19,8 @@ public class Food : MonoBehaviour {
 		if(gameObject && other)
 		{
 		Tadpole tadPole = other.gameObject.GetComponent<Tadpole>();
+
+		// ノックバック中は処理しない
 		if(tadPole && !tadPole.CheckKockBack())
 		{
 			tadPole.LevelUp();
