@@ -17,5 +17,9 @@ public class Food : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other)
 	{
 		Destroy(gameObject);
+
+		Tadpole tadPole = other.gameObject.GetComponent<Tadpole>();
+
+		tadPole.LevelUp();
 	}
 }

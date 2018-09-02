@@ -5,6 +5,8 @@ using UnityEngine;
 public class Tadpole : MonoBehaviour {
 
 public bool bPlayer01 = true;
+
+	int Level = 0;
 	bool bSelfMove = false;
 	Vector3 StartPos;
 	Vector3 EndPos;
@@ -71,4 +73,9 @@ bAdvance = false;
 			}
 		}
     }
+
+	public void LevelUp(int upNum = 1)
+	{
+		Level += upNum;
+	}
 }
