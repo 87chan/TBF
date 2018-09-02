@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tadpole : MonoBehaviour {
+
+public bool bPlayer01 = true;
+	bool bSelfMove = false;
 	Vector3 StartPos;
 	Vector3 EndPos;
 	bool bAdvance;
@@ -19,17 +22,26 @@ public class Tadpole : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-		// https://qiita.com/tempura/items/4a5482ff6247ec8873df
         TouchInfo info = AppUtil.GetTouch();
 
 		Vector3 velocity = new Vector3();
 
         if (info == TouchInfo.Began)
-        {
-			StartPos = AppUtil.GetTouchPosition();
-        }
-		else if (info == TouchInfo.Ended)
 		{
+			StartPos = AppUtil.GetTouchPosition();
+
+			Debug.Log(StartPos);
+			float height = Screen.height * 0.5f;
+			if((StartPos.y >= height && bPlayer01)
+			|| (StartPos.y < height && !bPlayer01))
+			{
+				bSelfMove = true;
+			}
+        }
+		else if (info == TouchInfo.Ended && bSelfMove)
+		{
+			bSelfMove = false;
+
 			EndPos = AppUtil.GetTouchPosition();
 		
 			Vector3 direction = (StartPos - EndPos);
@@ -47,7 +59,7 @@ public class Tadpole : MonoBehaviour {
 		if(bAdvance)
 		{
 			CurrentSpeed -= inverseAccel;
-			Debug.Log(CurrentSpeed);
+			// Debug.Log(CurrentSpeed);
 			velocity = CurrentSpeed * Direction;
 
 			if(CurrentSpeed >= 0)

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿// https://qiita.com/tempura/items/4a5482ff6247ec8873df
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
