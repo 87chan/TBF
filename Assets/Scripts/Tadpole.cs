@@ -22,12 +22,16 @@ public bool bPlayer01 = true;
 	// 弾かれた際の加速度
 	static float POP_ACCEL = 10f;
 
+	static float KOCKBACK_TIME = 0.5f;
+
 	int Level = 1;
 	bool bSelfMove;
+	bool bKockBack;
 	Vector3 StartPos;
 	Vector3 EndPos;
 	Vector3 Direction;
 	float CurrentSpeed;
+	float CurrentKockBackTime;
 
 	private void UpdateFoodNumText()
 	{
@@ -39,6 +43,11 @@ public bool bPlayer01 = true;
 	{
 		Level = level;
 		this.UpdateFoodNumText();
+	}
+
+	public void KockBack()
+	{
+		bKockBack = true;
 	}
 
 	public void LevelUp(int upNum = 1)
@@ -71,6 +80,13 @@ public bool bPlayer01 = true;
     // Update is called once per frame
     void Update()
     {
+		this.UpdateTransform();
+
+		this.UpdateKockBack();
+    }
+
+	void UpdateTransform()
+	{
         TouchInfo info = AppUtil.GetTouch();
 
 		Vector3 velocity = new Vector3();
@@ -106,38 +122,59 @@ public bool bPlayer01 = true;
         AddAccel(-INVERSE_ACCEL);
         velocity = CurrentSpeed * Direction;
         transform.position += velocity;
-    }
+	}
 
-	void OnTriggerEnter2D(Collider2D other)
+	void UpdateKockBack()
 	{
-		if(gameObject && other)
+		if(bKockBack)
 		{
-			Tadpole otherTadPole = other.gameObject.GetComponent<Tadpole>();
-		if(otherTadPole)
-		{
-			// よりレベルの高い方を下げる
-			// 同レベルの場合は下がらない
-			if(otherTadPole.Level == this.Level)
+			CurrentKockBackTime += Time.deltaTime;
+			if(CurrentKockBackTime >= KOCKBACK_TIME)
 			{
+				bKockBack = false;
+				CurrentKockBackTime = 0.0f;
 			}
-			else if(otherTadPole.Level < Level)
-			{
-				this.LevelDown();
-			}
-			else
-			{
-				otherTadPole.LevelDown();
-			}
-
-			Vector3 direction = otherTadPole.transform.position - this.transform.position;
-			direction.Normalize();
-
-			otherTadPole.SetDirection(direction);
-			otherTadPole.AddAccel(POP_ACCEL);
-
-			this.SetDirection(-direction);
-			this.AddAccel(POP_ACCEL);
-		}
 		}
 	}
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (gameObject && other)
+        {
+            Tadpole otherTadPole = other.gameObject.GetComponent<Tadpole>();
+            if (otherTadPole)
+            {
+				// ノックバック中は処理しない
+                if (!otherTadPole.bKockBack && !this.bKockBack)
+                {
+                    // よりレベルの高い方を下げる
+                    // 同レベルの場合は下がらない
+                    if (otherTadPole.Level == this.Level)
+                    {
+                    }
+                    else if (otherTadPole.Level < Level)
+                    {
+                        this.LevelDown();
+                    }
+                    else
+                    {
+                        otherTadPole.LevelDown();
+                    }
+
+                    Vector3 direction = otherTadPole.transform.position - this.transform.position;
+                    direction.Normalize();
+
+                    // ヒットしてきた対象
+                    otherTadPole.SetDirection(direction);
+                    otherTadPole.AddAccel(POP_ACCEL);
+                    otherTadPole.KockBack();
+
+                    // 自分自身
+                    this.SetDirection(-direction);
+                    this.AddAccel(POP_ACCEL);
+                    this.KockBack();
+                }
+            }
+        }
+    }
 }
