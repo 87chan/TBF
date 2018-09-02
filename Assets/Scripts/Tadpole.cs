@@ -10,12 +10,12 @@ public bool bPlayer01 = true;
 	static float AdvanceAccel = 10f;
 	static float InverseAccel = 0.25f;
 	static float SpeedMax = 10f;
+	static float PopAccel = 10f;
 
 	int Level = 0;
 	bool bSelfMove = false;
 	Vector3 StartPos;
 	Vector3 EndPos;
-	bool bAdvance;
 	Vector3 Direction;
 	float CurrentSpeed;
 
@@ -47,35 +47,21 @@ public bool bPlayer01 = true;
 			bSelfMove = false;
 
 			EndPos = AppUtil.GetTouchPosition();
-		
+			
 			Vector3 direction = (StartPos - EndPos);
 			Direction = direction.normalized;
 
+			AddAccel(AdvanceAccel);
+			
+			// 回転を変更
 			float deg = Mathf.Atan2(direction.y,direction.x) * Mathf.Rad2Deg;
 			deg -= 90;
-
 			transform.rotation = Quaternion.Euler(0,0,deg);
-			
-			bAdvance = true;
-			CurrentSpeed += AdvanceAccel;
-			CurrentSpeed = Mathf.Clamp(CurrentSpeed,0,SpeedMax);
 		}
 
-		if(bAdvance)
-		{
-			CurrentSpeed -= InverseAccel;
-
-			velocity = CurrentSpeed * Direction;
-
-			if(CurrentSpeed >= 0)
-			{
-			transform.position += velocity;
-			}
-			else
-			{
-bAdvance = false;
-			}
-		}
+        AddAccel(-InverseAccel);
+        velocity = CurrentSpeed * Direction;
+        transform.position += velocity;
     }
 
 	public void LevelUp(int upNum = 1)
@@ -88,6 +74,17 @@ bAdvance = false;
 	{
 		Level -= downNum;
 		Level = Mathf.Clamp(Level,0,MaxLevel);
+	}
+
+	public void AddAccel(float value)
+	{
+		CurrentSpeed += value;
+		CurrentSpeed = Mathf.Clamp(CurrentSpeed,0,SpeedMax);
+	}
+
+	public void SetDirection(Vector3 direction)
+	{
+		Direction = direction;
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
@@ -110,6 +107,15 @@ bAdvance = false;
 			{
 				otherTadPole.LevelDown();
 			}
+
+			Vector3 direction = otherTadPole.transform.position - this.transform.position;
+			direction.Normalize();
+
+			otherTadPole.SetDirection(direction);
+			otherTadPole.AddAccel(PopAccel);
+
+			this.SetDirection(-direction);
+			this.AddAccel(PopAccel);
 		}
 		}
 	}
