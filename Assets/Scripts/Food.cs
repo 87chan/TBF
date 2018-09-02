@@ -16,10 +16,14 @@ public class Food : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		Destroy(gameObject);
-
+		if(gameObject && other)
+		{
 		Tadpole tadPole = other.gameObject.GetComponent<Tadpole>();
-
-		tadPole.LevelUp();
+		if(tadPole)
+		{
+			tadPole.LevelUp();
+			Destroy(gameObject);
+		}
+		}
 	}
 }
