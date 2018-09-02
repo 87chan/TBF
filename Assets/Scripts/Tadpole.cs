@@ -6,11 +6,20 @@ public class Tadpole : MonoBehaviour {
 
 public bool bPlayer01 = true;
 
-	static int MaxLevel = 3;
-	static float AdvanceAccel = 10f;
-	static float InverseAccel = 0.25f;
-	static float SpeedMax = 10f;
-	static float PopAccel = 10f;
+	// 成長段階の最大値
+	static int MAX_LEVEL = 4;
+
+	// 前進時の加速度
+	static float ADVANCE_ACCEL = 10f;
+
+	// 進行方向とは逆に働く減速度
+	static float INVERSE_ACCEL = 0.25f;
+
+	// 速度の最大値
+	static float MAX_SPEED = 10f;
+
+	// 弾かれた際の加速度
+	static float POP_ACCEL = 10f;
 
 	int Level = 0;
 	bool bSelfMove = false;
@@ -51,7 +60,7 @@ public bool bPlayer01 = true;
 			Vector3 direction = (StartPos - EndPos);
 			Direction = direction.normalized;
 
-			AddAccel(AdvanceAccel);
+			AddAccel(ADVANCE_ACCEL);
 			
 			// 回転を変更
 			float deg = Mathf.Atan2(direction.y,direction.x) * Mathf.Rad2Deg;
@@ -59,7 +68,7 @@ public bool bPlayer01 = true;
 			transform.rotation = Quaternion.Euler(0,0,deg);
 		}
 
-        AddAccel(-InverseAccel);
+        AddAccel(-INVERSE_ACCEL);
         velocity = CurrentSpeed * Direction;
         transform.position += velocity;
     }
@@ -67,19 +76,19 @@ public bool bPlayer01 = true;
 	public void LevelUp(int upNum = 1)
 	{
 		Level += upNum;
-		Level = Mathf.Clamp(Level,0,MaxLevel);
+		Level = Mathf.Clamp(Level,0,MAX_LEVEL);
 	}
 
 	public void LevelDown(int downNum = 1)
 	{
 		Level -= downNum;
-		Level = Mathf.Clamp(Level,0,MaxLevel);
+		Level = Mathf.Clamp(Level,0,MAX_LEVEL);
 	}
 
 	public void AddAccel(float value)
 	{
 		CurrentSpeed += value;
-		CurrentSpeed = Mathf.Clamp(CurrentSpeed,0,SpeedMax);
+		CurrentSpeed = Mathf.Clamp(CurrentSpeed,0,MAX_SPEED);
 	}
 
 	public void SetDirection(Vector3 direction)
@@ -112,10 +121,10 @@ public bool bPlayer01 = true;
 			direction.Normalize();
 
 			otherTadPole.SetDirection(direction);
-			otherTadPole.AddAccel(PopAccel);
+			otherTadPole.AddAccel(POP_ACCEL);
 
 			this.SetDirection(-direction);
-			this.AddAccel(PopAccel);
+			this.AddAccel(POP_ACCEL);
 		}
 		}
 	}
