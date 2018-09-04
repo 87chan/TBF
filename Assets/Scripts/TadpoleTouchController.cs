@@ -35,11 +35,16 @@ public class TadpoleTouchController : MonoBehaviour
         else if (info == TouchInfo.Ended && bTapTrigger)
         {
             bTapTrigger = false;
-            // オタマジャクシを移動させる。
+
             Vector3 endPos = AppUtil.GetTouchPosition();
-            Vector3 direction = (StartPos - endPos).normalized;
-            // 移動方向の確定.おたまじゃくしに伝える.
-            this.Tadpole.MoveDirection(direction);
+
+            // 指を動かした場合にのみ、オタマジャクシを移動させる。
+            if (StartPos != endPos)
+            {
+                Vector3 direction = (StartPos - endPos).normalized;
+                // 移動方向の確定.おたまじゃくしに伝える.
+                this.Tadpole.MoveDirection(direction);
+            }
         }
     }
 
