@@ -16,6 +16,18 @@ public class GameMain : MonoBehaviour {
     List<Tadpole> fieldTadpoles = new List<Tadpole>();
 
 
+    /// <summary>
+    /// 餌生成.
+    /// </summary>
+    /// <param name="spawnPosition">生成位置</param>
+    public void CreateFood(Vector3 spawnPosition)
+    {
+        Food newFood = Instantiate(Food, spawnPosition, Quaternion.identity);
+        newFood.OnDeadListeners += OnFoodDead;    //死亡時のコールバック.
+        fieldFoods.Add(newFood);                  //管理.
+    }
+
+
     // Use this for initialization
     void Start () {
 		if(Food)
@@ -29,9 +41,7 @@ public class GameMain : MonoBehaviour {
 				Pos -= new Vector3(width * 0.5f,height * 0.5f,0);
 
                 // 餌生成.
-                Food newFood = Instantiate(Food, Pos, Quaternion.identity);
-                newFood.OnDeadListeners += OnFoodDead;    //死亡時のコールバック.
-                fieldFoods.Add(newFood);                  //管理.
+                this.CreateFood(Pos);
 			}
 		}
 

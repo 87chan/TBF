@@ -182,8 +182,7 @@ public bool bPlayer01 = true;
 					// エサの配置
 					if(bSpawnFood)
                     {
-                        Food food = GameObject.Find("GameMain").GetComponent<GameMain>().Food;
-                        GameObject.Instantiate(food, spawnPosition, Quaternion.identity);
+                        GameObject.Find("GameMain").GetComponent<GameMain>().CreateFood(spawnPosition);
                     }
                 }
             }
