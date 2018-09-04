@@ -12,6 +12,7 @@ public class TadpoleAI : MonoBehaviour
     // パラメータを変更するだけでAIの挙動が変わるようにする = バリエーション豊かにしやすくするため
     // この構造体のパラメータ使ってデータドリブンなAIを目指す.
     // 人間の能力値をベースに考える.
+    [System.Serializable]
     public struct DATA
     {
         public float 集中力;  //集中力、これが高いほど有利な判定を出しやすくなる.(反応速度や操作精度等)(0～1)
@@ -44,24 +45,24 @@ public class TadpoleAI : MonoBehaviour
         this.fieldTadpoles = gameMain.FieldTadpoles;
 
         // #todo データ仮適当設定.
-        this.data.集中力 = 0.8f;
-        this.data.タップ連打可能秒数 = 0.5f;
-        this.data.操作精度 = 0.75f;
-        this.data.操作精度のブレ度数 = 10.0f; 
+        this.Data.集中力 = 0.8f;
+        this.Data.タップ連打可能秒数 = 0.7f;
+        this.Data.操作精度 = 0.75f;
+        this.Data.操作精度のブレ度数 = 10.0f; 
     }
 
     // Update is called once per frame
     void Update ()
     {
         // まずは状況判断. 今の状況を確認して反応速度の秒数分だけずらして行動させる.
-        float 反応速度 = Random.Range(Mathf.Lerp(data.最小反応速度, data.最大反応速度, data.集中力), data.最大反応速度);
+        float 反応速度 = Random.Range(Mathf.Lerp(Data.最小反応速度, Data.最大反応速度, Data.集中力), Data.最大反応速度);
 
         //とりあえず適当な餌の位置に向かっていくだけ.
         if(fieldFoods.Count > 0)
         {
-            if(this.data.タップクールタイム < 0)
+            if(this.Data.タップクールタイム < 0)
             {
-                this.data.タップクールタイム = this.data.タップ連打可能秒数; //クールタイム回復.
+                this.Data.タップクールタイム = this.Data.タップ連打可能秒数; //クールタイム回復.
 
 
                 //餌の方向へ向かう.
@@ -76,12 +77,7 @@ public class TadpoleAI : MonoBehaviour
 
                 // 操作精度判定.
                 // 進みたい方向に対して ある程度の範囲のブレが生じる.
-                {
-                    float shakeDirection = Random.Range(0, 1) == 0 ? -1.0f : 1.0f;  //ブレ方向.
-                    float precision = Random.Range(Mathf.Lerp(data.操作精度, 1.0f, data.集中力), 1.0f);    //最終的な精度.
-                    Quaternion q = Quaternion.Euler(0, 0, precision * this.data.操作精度のブレ度数 * shakeDirection);
-                    direction = q * direction;
-                }
+                direction = GetPrecisionDir(direction);
 
                 // 進める.
                 tadpole.MoveDirection(direction.normalized);
@@ -99,10 +95,22 @@ public class TadpoleAI : MonoBehaviour
         }
 
         // クールタイムは毎秒減る.
-        this.data.タップクールタイム -= Time.deltaTime;
+        this.Data.タップクールタイム -= Time.deltaTime;
 	}
 
-    public DATA data;       // 
+    /// <summary>
+    /// 操作精度を考慮した移動方向を返す.
+    /// </summary>
+    /// <returns>操作精度を考慮した移動方向</returns>
+    private Vector3 GetPrecisionDir(Vector3 direction)
+    {
+        float shakeDirection = Random.Range(0, 1) == 0 ? -1.0f : 1.0f;  //ブレ方向.
+        float precision = Random.Range(Mathf.Lerp(Data.操作精度, 1.0f, Data.集中力), 1.0f);    //最終的な精度.
+        Quaternion q = Quaternion.Euler(0, 0, precision * this.Data.操作精度のブレ度数 * shakeDirection);
+        return  q * direction;
+    }
+
+    public DATA Data;       // 
     public Tadpole tadpole; // 操作対象.
 
     private float 意思決定した時間 = 0.0f;
