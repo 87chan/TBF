@@ -26,10 +26,7 @@ public bool bPlayer01 = true;
 	static float KOCKBACK_TIME = 0.5f;
 
 	int Level = 1;
-	bool bSelfMove;
 	bool bKockBack;
-	Vector3 StartPos;
-	Vector3 EndPos;
 	Vector3 Direction;
 	float CurrentSpeed;
 	float CurrentKockBackTime;
@@ -78,6 +75,18 @@ public bool bPlayer01 = true;
 		Direction = direction;
 	}
 
+    public void MoveDirection(Vector3 direction)
+    {
+        Direction = direction;
+
+        AddAccel(ADVANCE_ACCEL);
+
+        // 回転を変更
+        float deg = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        deg -= 90;
+        transform.rotation = Quaternion.Euler(0, 0, deg);
+    }
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -94,40 +103,8 @@ public bool bPlayer01 = true;
 
 	void UpdateTransform()
 	{
-        TouchInfo info = AppUtil.GetTouch();
-
-		Vector3 velocity = new Vector3();
-
-        if (info == TouchInfo.Began)
-		{
-			StartPos = AppUtil.GetTouchPosition();
-
-			float height = Screen.height * 0.5f;
-			if((StartPos.y >= height && bPlayer01)
-			|| (StartPos.y < height && !bPlayer01))
-			{
-				bSelfMove = true;
-			}
-        }
-		else if (info == TouchInfo.Ended && bSelfMove)
-		{
-			bSelfMove = false;
-
-			EndPos = AppUtil.GetTouchPosition();
-			
-			Vector3 direction = (StartPos - EndPos);
-			Direction = direction.normalized;
-
-			AddAccel(ADVANCE_ACCEL);
-			
-			// 回転を変更
-			float deg = Mathf.Atan2(direction.y,direction.x) * Mathf.Rad2Deg;
-			deg -= 90;
-			transform.rotation = Quaternion.Euler(0,0,deg);
-		}
-
         AddAccel(-INVERSE_ACCEL);
-        velocity = CurrentSpeed * Direction;
+        Vector3 velocity = CurrentSpeed * Direction;
         transform.position += velocity;
 	}
 
