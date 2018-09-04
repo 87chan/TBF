@@ -7,8 +7,10 @@ using UnityEngine;
 /// </summary>
 public class TadpoleAI : MonoBehaviour
 {
+    // #todo とりあえず適当に日本語変数名になっているので後で変える.
+
     // パラメータを変更するだけでAIの挙動が変わるようにする = バリエーション豊かにしやすくするため
-    // この構造体のパラメータのデータドリブンでAIを記載する.
+    // この構造体のパラメータ使ってデータドリブンなAIを目指す.
     // 人間の能力値をベースに考える.
     public struct DATA
     {
@@ -25,6 +27,8 @@ public class TadpoleAI : MonoBehaviour
 
         public float 空間把握能力; //これが高いと、ちゃんと自分に近い餌を狙う(0～1).
 
+        public float タップ連打可能秒数; 　// 次のタップ操作までこの秒数指定分だけ待つ(秒数).
+        public float タップクールタイム;  // 次のタップ操作までのクールタイム(秒数)
     }
 
 	// Use this for initialization
@@ -37,17 +41,42 @@ public class TadpoleAI : MonoBehaviour
 
         this.fieldFoods = gameMain.FieldFoods;
         this.fieldTadpoles = gameMain.FieldTadpoles;
+
+        // #todo データ仮適当設定.
+        this.data.タップ連打可能秒数 = 0.6f;
     }
 
     // Update is called once per frame
     void Update ()
     {
         // まずは状況判断. 今の状況を確認して反応速度の秒数分だけずらして行動させる.
-        float 反応速度 = Random.Range(Mathf.Lerp(data.最小反応速度, data.最大反応速度, data.集中力), data.最大反応速度);
+        // float 反応速度 = Random.Range(Mathf.Lerp(data.最小反応速度, data.最大反応速度, data.集中力), data.最大反応速度);
 
-        //とりあえず適当な餌のいちに向かっていくだけ.
+        //とりあえず適当な餌の位置に向かっていくだけ.
+        if(fieldFoods.Count > 0)
+        {
+            if(this.data.タップクールタイム < 0)
+            {
+                var direction = fieldFoods[0].transform.position - tadpole.transform.position;
+                direction.z = 0.0f;
+                tadpole.MoveDirection(direction.normalized);
 
-        //Debug.Log(fieldFoods.Count);
+                this.data.タップクールタイム = this.data.タップ連打可能秒数;
+            }
+        }
+
+        // 
+        foreach(var tad in fieldTadpoles)
+        {
+            if(this.tadpole == tad) //自分自身は除く.
+            {
+                continue;
+            }
+            // 自分より強いやつにタックル.
+        }
+
+        // クールタイムは毎秒減る.
+        this.data.タップクールタイム -= Time.deltaTime;
 	}
 
     public DATA data;       // 
