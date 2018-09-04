@@ -7,23 +7,23 @@ public class Tadpole : MonoBehaviour {
 
 public bool bPlayer01 = true;
 
-	// 成長段階の最大値
-	static int MAX_LEVEL = 4;
+    // 成長段階の最大値
+    const int MAX_LEVEL = 4;
 
 	// 前進時の加速度
-	static float ADVANCE_ACCEL = 10f;
+	const float ADVANCE_ACCEL = 10f;
 
-	// 進行方向とは逆に働く減速度
-	static float INVERSE_ACCEL = 0.25f;
+    // 進行方向とは逆に働く減速度
+    const float INVERSE_ACCEL = 0.25f;
 
-	// 速度の最大値
-	static float MAX_SPEED = 10f;
+    // 速度の最大値
+    const float MAX_SPEED = 10f;
 
     // 弾かれた際の加速度
-    static float POP_ACCEL_ACTIVE = 5f;
-    static float POP_ACCEL_PASSIVE = 10f;
+    const float POP_ACCEL_ACTIVE = 5f;
+    const float POP_ACCEL_PASSIVE = 10f;
 
-	static float KOCKBACK_TIME = 0.5f;
+    const float KOCKBACK_TIME = 0.5f;
 
 	int Level = 1;
 	bool bKockBack;
@@ -75,13 +75,17 @@ public bool bPlayer01 = true;
 		Direction = direction;
 	}
 
-    public void MoveDirection(Vector3 direction)
+    /// <summary>
+    /// 指定した方向におたまじゃくしが移動する.
+    /// </summary>
+    /// <param name="direction">正規化された移動方向,画面中央を0とした2d座標系.zは使わない</param>
+    /// <param name="accel">加速量</param>
+    public void MoveDirection(Vector3 direction,float accel = ADVANCE_ACCEL)
     {
-        Direction = direction;
+        //方向、加速度、回転の設定.
+        SetDirection(direction);
+        AddAccel(accel);
 
-        AddAccel(ADVANCE_ACCEL);
-
-        // 回転を変更
         float deg = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         deg -= 90;
         transform.rotation = Quaternion.Euler(0, 0, deg);
