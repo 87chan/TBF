@@ -32,13 +32,11 @@ public class GameMain : MonoBehaviour {
     void Start () {
 		if(Food)
 		{
-			Camera myCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
-			float height = myCamera.orthographicSize * 2.0f;
-			float width = (height / 16) * 9;
+			Vector2 Size = AppUtil.GetOrthographicSize();
 			for(int i = 0; i < InitialFoodNum;++i)
 			{
-				Vector3 Pos = new Vector3(Random.Range(0, width),Random.Range(0,height),0);
-				Pos -= new Vector3(width * 0.5f,height * 0.5f,0);
+				Vector3 Pos = new Vector3(Random.Range(0, Size.x),Random.Range(0,Size.y),0);
+				Pos -= new Vector3(Size.x * 0.5f, Size.y * 0.5f,0);
 
                 // 餌生成.
                 this.CreateFood(Pos);

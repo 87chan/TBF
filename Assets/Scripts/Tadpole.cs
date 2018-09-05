@@ -110,6 +110,38 @@ public bool bPlayer01 = true;
         AddAccel(-INVERSE_ACCEL);
         Vector3 velocity = CurrentSpeed * Direction;
         transform.position += velocity;
+
+		AdjustPosition();
+	}
+
+	// 移動後の位置調整
+	void AdjustPosition()
+	{
+		Vector3 newPosition = transform.position;
+        Rect rect = new Rect(-AppUtil.GetOrthographicSize() * 0.5f, AppUtil.GetOrthographicSize());
+		float radius = this.GetComponent<CircleCollider2D>().radius * 2.0f;
+		
+		// 横軸の画面端押し出し
+		if((newPosition.x - radius) < rect.xMin)
+		{
+			newPosition.x = rect.xMin + radius;
+		}
+		else if(rect.xMax < newPosition.x + radius)
+		{
+			newPosition.x = rect.xMax - radius;
+		}
+
+		// 縦軸の画面端押し出し
+		if(newPosition.y - radius < rect.yMin)
+		{
+			newPosition.y = rect.yMin + radius;
+		}
+		else if(rect.yMax < newPosition.y + radius)
+		{
+			newPosition.y = rect.yMax - radius;
+		}
+
+		transform.position = newPosition;
 	}
 
 	void UpdateKockBack()

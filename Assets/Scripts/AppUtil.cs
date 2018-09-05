@@ -63,6 +63,15 @@ public static class AppUtil
     {
         return camera.ScreenToWorldPoint(GetTouchPosition());
     }
+
+    public static Vector2 GetOrthographicSize()
+    {
+        Camera myCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        float height = myCamera.orthographicSize * 2.0f;
+        float width = (height / 16) * 9;
+
+        return new Vector2(width, height);
+    }
 }
 
 /// <summary>
