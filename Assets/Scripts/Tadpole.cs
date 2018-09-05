@@ -23,7 +23,7 @@ public bool bPlayer01 = true;
     const float POP_ACCEL_ACTIVE = 5f;
     const float POP_ACCEL_PASSIVE = 10f;
 
-    const float KOCKBACK_TIME = 0.5f;
+    const float KOCKBACK_TIME = 0.1f;
 
 	int Level = 1;
 	bool bKockBack;
