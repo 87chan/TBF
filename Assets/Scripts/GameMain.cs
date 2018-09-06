@@ -6,6 +6,8 @@ public class GameMain : MonoBehaviour {
 
 	public Food Food;
 	public int InitialFoodNum;
+    public int PlayerNum;
+    public int AINum;
 
     // フィールド上に存在する餌.
     public List<Food> FieldFoods { get{ return fieldFoods; } }
