@@ -12,7 +12,8 @@ public class TadpoleTouchController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
-        Debug.Assert(this.Tadpole,"GUIにて操作対象のおたまじゃくしをセットする必要があります");
+        Tadpole = this.GetComponentInChildren<Tadpole>();
+        Debug.Assert(this.Tadpole,"おたまじゃくしが見つかりません");
         this.boxCollider = GetComponent<Collider2D>();
 	}
 	
@@ -48,7 +49,7 @@ public class TadpoleTouchController : MonoBehaviour
         }
     }
 
-    public Tadpole Tadpole; //操作対象のオタマジャクシ.
+    Tadpole Tadpole; //操作対象のオタマジャクシ.
 
     Vector3 StartPos;       //タップ開始位置.
     bool bTapTrigger;       //タップされている

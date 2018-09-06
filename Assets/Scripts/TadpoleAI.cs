@@ -36,7 +36,8 @@ public class TadpoleAI : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
-        Debug.Assert(tadpole, "GUIにて操作するTadpoleを設定してください");
+        tadpole = this.GetComponentInChildren<Tadpole>();
+        Debug.Assert(tadpole, "おたまじゃくしが見つかりません");
 
         GameMain gameMain = GameObject.Find("GameMain").GetComponent<GameMain>();
         Debug.Assert(gameMain, "GameMain という名前で検索しましたがヒエラルキ上に見つかりませんでした");
@@ -111,7 +112,7 @@ public class TadpoleAI : MonoBehaviour
     }
 
     public DATA Data;       // 
-    public Tadpole tadpole; // 操作対象.
+    Tadpole tadpole; // 操作対象.
 
     private float 意思決定した時間 = 0.0f;
 
