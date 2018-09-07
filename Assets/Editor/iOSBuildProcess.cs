@@ -4,19 +4,22 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
+
+#if UNITY_IOS
 using UnityEditor.iOS.Xcode;
+#endif
 
 // 参考
 // https://mushikago.com/i/?p=7935
 
 public class iOSBuildProcess : MonoBehaviour 
 {
-	
+#if UNITY_IOS
 	[PostProcessBuild]
 	public static void OnPostprocessBuild(BuildTarget buildTarget, string path)
 	{
 
-		if (buildTarget == BuildTarget.iOS) 
+        if (buildTarget == BuildTarget.iOS) 
 		{
 			string projPath = PBXProject.GetPBXProjectPath (path);
 			PBXProject proj = new PBXProject ();
@@ -29,4 +32,5 @@ public class iOSBuildProcess : MonoBehaviour
 			File.WriteAllText(projPath, proj.WriteToString());
 		}
 	}
+#endif
 }
