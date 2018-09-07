@@ -29,9 +29,15 @@ public class GameMain : MonoBehaviour {
         fieldFoods.Add(newFood);                  //管理.
     }
 
+    void Awake()
+    {
+        // #todo ひとまずここでフレームレート設定している。今後アプリ自体の初期化場所が決まったら移動させる
+        Application.targetFrameRate = 60;
+    }
 
     // Use this for initialization
     void Start () {
+        
 		if(Food)
 		{
 			Vector2 Size = AppUtil.GetOrthographicSize();
