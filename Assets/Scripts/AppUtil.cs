@@ -72,6 +72,15 @@ public static class AppUtil
 
         return new Vector2(width, height);
     }
+
+    public static Vector3 GetRandomFieldPos()
+    {
+        Vector2 size = AppUtil.GetOrthographicSize();
+        Vector3 pos = new Vector3(Random.Range(0, size.x), Random.Range(0, size.y), 0);
+        pos -= new Vector3(size.x * 0.5f, size.y * 0.5f, 0);
+
+        return pos;
+    }
 }
 
 /// <summary>

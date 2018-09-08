@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameMain : MonoBehaviour {
 
 	public Food Food;
+    public TadpoleAI TadpoleAI;
 	public int InitialFoodNum;
     public int PlayerNum;
     public int AINum;
@@ -16,6 +17,8 @@ public class GameMain : MonoBehaviour {
     // フィールド上に存在するおたまじゃくし
     public List<Tadpole> FieldTadpoles { get { return fieldTadpoles; } }
     List<Tadpole> fieldTadpoles = new List<Tadpole>();
+
+    Canvas Canvas;
 
 
     /// <summary>
@@ -29,6 +32,12 @@ public class GameMain : MonoBehaviour {
         fieldFoods.Add(newFood);                  //管理.
     }
 
+    public void CreateTadpoleAI(Vector3 spawnPosition)
+    {
+        TadpoleAI newTadpoleAI = Instantiate(TadpoleAI, spawnPosition, Quaternion.identity);
+        newTadpoleAI.transform.SetParent(Canvas.transform, false);
+    }
+
     void Awake()
     {
         // #todo ひとまずここでフレームレート設定している。今後アプリ自体の初期化場所が決まったら移動させる
@@ -36,20 +45,30 @@ public class GameMain : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start () {
-        
+    void Start ()
+    {
+        Canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        Debug.Assert(Canvas, "Canvas という名前で検索しましたがヒエラルキ上に見つかりませんでした");
+
+        Debug.Assert(Food, "GameMainにエサのBehaviorを指定してください");
 		if(Food)
 		{
-			Vector2 Size = AppUtil.GetOrthographicSize();
-			for(int i = 0; i < InitialFoodNum;++i)
+            for(int i = 0; i < InitialFoodNum;++i)
 			{
-				Vector3 Pos = new Vector3(Random.Range(0, Size.x),Random.Range(0,Size.y),0);
-				Pos -= new Vector3(Size.x * 0.5f, Size.y * 0.5f,0);
-
                 // 餌生成.
-                this.CreateFood(Pos);
+                this.CreateFood(AppUtil.GetRandomFieldPos());
 			}
 		}
+
+        Debug.Assert(Food, "GameMainにAIのBehaviorを指定してください");
+        if(TadpoleAI)
+        {
+            for(int i = 0; i < AINum;++i)
+            {
+                // AI生成
+                this.CreateTadpoleAI(AppUtil.GetRandomFieldPos());
+            }
+        }
 
         // オタマジャクシをフィールド上から取得.
         GameObject[] tadpoles = GameObject.FindGameObjectsWithTag("Player");
