@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameMain : MonoBehaviour {
 
@@ -21,6 +22,16 @@ public class GameMain : MonoBehaviour {
 
     Canvas Canvas;
 
+    // 前フレームの傾き
+    Vector3 PrevAccel;
+
+    int SHAKE_NUM_TO_RESTART = 4;
+    int ShakeCount;
+
+    void InitVariable()
+    {
+        ShakeCount = 0;
+    }
 
     /// <summary>
     /// 餌生成.
@@ -68,6 +79,14 @@ public class GameMain : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
+        this.GameMainInit();
+    }
+
+    // ゲームを開始する為の準備処理
+    void GameMainInit()
+    {
+        this.InitVariable();
+
         Canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         Debug.Assert(Canvas, "Canvas という名前で検索しましたがヒエラルキ上に見つかりませんでした");
 
@@ -107,9 +126,32 @@ public class GameMain : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
-		
+	void Update ()
+    {
+		this.CheckRestart();
 	}
+
+    void CheckRestart()
+    {
+        Vector3 accel = Input.acceleration;
+
+        // シェイクを検知
+        if (Vector3.Dot(PrevAccel, accel) < 0.0f)
+        {
+            ++ShakeCount;
+            // 一定数振ったと見なしてリスタート
+            if(ShakeCount >= SHAKE_NUM_TO_RESTART)
+            {
+                this.Restart();
+            }
+        }
+        PrevAccel = Input.acceleration;
+    }
+
+    void Restart()
+    {
+        SceneManager.LoadScene("MainScene");
+    }
 
     void OnFoodDead(Food food)
     {
