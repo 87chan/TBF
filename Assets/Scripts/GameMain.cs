@@ -6,6 +6,7 @@ public class GameMain : MonoBehaviour {
 
 	public Food Food;
     public TadpoleAI TadpoleAI;
+    public TadpoleTouchController TadpolePlayer;
 	public int InitialFoodNum;
     public int PlayerNum;
     public int AINum;
@@ -38,6 +39,26 @@ public class GameMain : MonoBehaviour {
         newTadpoleAI.transform.SetParent(Canvas.transform, false);
     }
 
+    public void CreatePlayer(int playerNum)
+    {
+        if(playerNum == 2)
+        {
+            this.CreatePlayerCore(new Vector2(0, 320), new Vector2(720, 640));
+            this.CreatePlayerCore(new Vector2(0, -320), new Vector2(720, 640));
+        }
+        else
+        {
+            Debug.Assert(false, "指定したプレイヤー数は想定されていません");
+        }
+    }
+
+    void CreatePlayerCore(Vector2 spawnPosition, Vector2 size)
+    {
+        TadpoleTouchController newTadpolePlayer = Instantiate(TadpolePlayer, new Vector3(), Quaternion.identity);
+        newTadpolePlayer.transform.SetParent(Canvas.transform, false);
+        newTadpolePlayer.ChangePlayerTouchInfo(spawnPosition, size);
+    }
+
     void Awake()
     {
         // #todo ひとまずここでフレームレート設定している。今後アプリ自体の初期化場所が決まったら移動させる
@@ -68,6 +89,13 @@ public class GameMain : MonoBehaviour {
                 // AI生成
                 this.CreateTadpoleAI(AppUtil.GetRandomFieldPos());
             }
+        }
+
+        Debug.Assert(TadpolePlayer, "GameMainにプレイヤーのBehaviorを指定してください");
+        if(TadpolePlayer)
+        {
+            // プレイヤー生成
+            this.CreatePlayer(PlayerNum);
         }
 
         // オタマジャクシをフィールド上から取得.

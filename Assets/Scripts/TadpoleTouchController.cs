@@ -8,6 +8,12 @@ using UnityEngine;
 /// </summary>
 public class TadpoleTouchController : MonoBehaviour
 {
+    public void ChangePlayerTouchInfo(Vector2 position, Vector2 size)
+    {
+        this.transform.position = new Vector3(position.x, position.y, transform.position.z);
+        BoxCollider2D collider = this.GetComponent<BoxCollider2D>();
+        collider.size = size;
+    }
 
 	// Use this for initialization
 	void Start ()
