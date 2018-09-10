@@ -57,6 +57,12 @@ public class GameMain : MonoBehaviour {
             this.CreatePlayerCore(new Vector2(0, 320), new Vector2(720, 640));
             this.CreatePlayerCore(new Vector2(0, -320), new Vector2(720, 640));
         }
+        else if(playerNum == 3)
+        {
+            this.CreatePlayerCore(new Vector2(0, 320), new Vector2(720, 640));
+            this.CreatePlayerCore(new Vector2(-180, -320), new Vector2(360, 640));
+            this.CreatePlayerCore(new Vector2(180, -320), new Vector2(360, 640));
+        }
         else
         {
             Debug.Assert(false, "指定したプレイヤー数は想定されていません");
