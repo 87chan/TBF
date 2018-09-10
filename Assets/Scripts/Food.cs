@@ -8,7 +8,7 @@ public class Food : MonoBehaviour
     public delegate void OnDead(Food food);
     public OnDead OnDeadListeners;
 
-    private readonly float DROP_SECOND = 3.5f;  // 何秒で池に落ちるか.
+    private readonly float DROP_SECOND = 1.5f;  // 何秒で池に落ちるか.
     private float dropSecond;   // 池に落ちるまでの残り秒数.
     private bool isDroped;      // 餌が池の中に落ちたかどうか.(生成されてしばらくは影状態になっている)
     private bool isDead;        // 完全に餌がもう死んだかどうか.
