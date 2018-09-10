@@ -214,7 +214,7 @@ public bool bPlayer01 = true;
 					// エサの配置
 					if(bSpawnFood)
                     {
-                        GameObject.Find("GameMain").GetComponent<GameMain>().CreateFood(spawnPosition);
+                        GameObject.Find("GameMain").GetComponent<GameMain>().CreateFood(spawnPosition,false);
                     }
                 }
             }
