@@ -54,14 +54,14 @@ public class GameMain : MonoBehaviour {
     {
         if(playerNum == 2)
         {
-            this.CreatePlayerCore(new Vector2(0, 320), new Vector2(720, 640));
-            this.CreatePlayerCore(new Vector2(0, -320), new Vector2(720, 640));
+            this.CreatePlayerCore(new Vector2(0, 320), new Vector2(720, 640), new Color(0.0f, 0.0f, 0.8f, 0.8f));
+            this.CreatePlayerCore(new Vector2(0, -320), new Vector2(720, 640), new Color(0.8f, 0.0f, 0.0f, 0.8f));
         }
         else if(playerNum == 3)
         {
-            this.CreatePlayerCore(new Vector2(0, 320), new Vector2(720, 640));
-            this.CreatePlayerCore(new Vector2(-180, -320), new Vector2(360, 640));
-            this.CreatePlayerCore(new Vector2(180, -320), new Vector2(360, 640));
+            this.CreatePlayerCore(new Vector2(0, 320), new Vector2(720, 640), new Color(0.0f, 0.0f, 0.8f, 0.8f));
+            this.CreatePlayerCore(new Vector2(-180, -320), new Vector2(360, 640), new Color(0.8f, 0.0f, 0.0f, 0.8f));
+            this.CreatePlayerCore(new Vector2(180, -320), new Vector2(360, 640), new Color(0.8f, 0.8f, 0.0f, 0.8f));
         }
         else
         {
@@ -69,11 +69,21 @@ public class GameMain : MonoBehaviour {
         }
     }
 
-    void CreatePlayerCore(Vector2 spawnPosition, Vector2 size)
+    void CreatePlayerCore(Vector2 spawnPosition, Vector2 size, Color color)
     {
         TadpoleTouchController newTadpolePlayer = Instantiate(TadpolePlayer, new Vector3(), Quaternion.identity);
         newTadpolePlayer.transform.SetParent(Canvas.transform, false);
         newTadpolePlayer.ChangePlayerTouchInfo(spawnPosition, size);
+
+        Tadpole tadpole = newTadpolePlayer.gameObject.GetComponentInChildren<Tadpole>();
+        if (tadpole)
+        {
+            SpriteRenderer renderer = tadpole.GetComponent<SpriteRenderer>();
+            if(renderer)
+            {
+                renderer.color = color;
+            }
+        }
     }
 
     void Awake()
