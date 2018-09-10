@@ -37,9 +37,11 @@ public class GameMain : MonoBehaviour {
     /// 餌生成.
     /// </summary>
     /// <param name="spawnPosition">生成位置</param>
-    public void CreateFood(Vector3 spawnPosition)
+    /// <param name="isPreDrop">true:影状態から始まる</param>
+    public void CreateFood(Vector3 spawnPosition,bool isPreDrop)
     {
         Food newFood = Instantiate(Food, spawnPosition, Quaternion.identity);
+        newFood.Initialize(isPreDrop);
         newFood.OnDeadListeners += OnFoodDead;    //死亡時のコールバック.
         fieldFoods.Add(newFood);                  //管理.
     }
@@ -112,7 +114,7 @@ public class GameMain : MonoBehaviour {
             for(int i = 0; i < InitialFoodNum;++i)
 			{
                 // 餌生成.
-                this.CreateFood(AppUtil.GetRandomFieldPos());
+                this.CreateFood(AppUtil.GetRandomFieldPos(),true);
 			}
 		}
 
