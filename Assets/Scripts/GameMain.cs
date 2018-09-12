@@ -202,6 +202,7 @@ public class GameMain : MonoBehaviour {
     void Restart()
     {
         SceneManager.LoadScene("MainScene");
+        Time.timeScale = 1.0f;
     }
 
     void OnFoodDead(Food food)
