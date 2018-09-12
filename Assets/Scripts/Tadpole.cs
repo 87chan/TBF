@@ -218,7 +218,7 @@ public class Tadpole : MonoBehaviour
 					// エサの配置
 					if(bSpawnFood)
                     {
-                        GameObject.Find("GameMain").GetComponent<GameMain>().CreateFood(spawnPosition);
+                        GameObject.Find("GameMain").GetComponent<GameMain>().CreateFood(spawnPosition,false);
                     }
                 }
             }
