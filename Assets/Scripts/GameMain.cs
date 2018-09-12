@@ -11,7 +11,7 @@ public class GameMain : MonoBehaviour {
     public TadpoleTouchController TadpolePlayer;
     public GameObject CountDownText;
     public GameObject WinnerText;
-	public int InitialFoodNum;
+	public int IntervalFoodNum;
     public int PlayerNum;
     public int AINum;
     public float FoodCreateInterval; //餌が再生成されるまでの秒数。
@@ -42,12 +42,9 @@ public class GameMain : MonoBehaviour {
     void InitVariable()
     {
         ShakeCount = 0;
-<<<<<<< HEAD
 
         LeftTimeToStart = TIME_TO_START;
-=======
         this.NowFoodCreateInterval = FoodCreateInterval;
->>>>>>> b64b164a88466dcb6162fd6d4f6a3ebb06f7f01c
     }
 
     /// <summary>
@@ -154,7 +151,7 @@ public class GameMain : MonoBehaviour {
         Debug.Assert(Food, "GameMainにエサのBehaviorを指定してください");
 		if(Food)
 		{
-            for(int i = 0; i < InitialFoodNum;++i)
+            for(int i = 0; i < IntervalFoodNum;++i)
 			{
                 // 餌生成.
                 this.CreateFood(AppUtil.GetRandomFieldPos(),true);
@@ -268,7 +265,7 @@ public class GameMain : MonoBehaviour {
         if(NowFoodCreateInterval < 0.0f)
         {
             NowFoodCreateInterval = FoodCreateInterval; //
-            for (int i = 0; i < InitialFoodNum; ++i)
+            for (int i = 0; i < IntervalFoodNum; ++i)
             {
                 this.CreateFood(AppUtil.GetRandomFieldPos(), true);
             }
