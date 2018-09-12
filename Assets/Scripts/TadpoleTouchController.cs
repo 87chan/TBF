@@ -26,6 +26,10 @@ public class TadpoleTouchController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!GameMain.bGameStart)
+        {
+            return;
+        }
         //#todo 正気を疑うレベルで汚いが緊急時なので、無理やりマルチタップとエディタ上での処理をifdefで分けている
 #if UNITY_EDITOR
         TouchInfo info = AppUtil.GetTouch();
