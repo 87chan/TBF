@@ -26,31 +26,34 @@ public class TadpoleTouchController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        TouchInfo info = AppUtil.GetTouch();
-
-        if (info == TouchInfo.Began)
+        if (GameMain.bGameStart)
         {
-            StartPos = AppUtil.GetTouchPosition();
+            TouchInfo info = AppUtil.GetTouch();
 
-            // 自身が持つ矩形内がタップされていたときのみタップ開始とする.
-            Vector3 worldPos = Camera.main.ScreenToWorldPoint(StartPos);
-            if(this.boxCollider.OverlapPoint(worldPos))
+            if (info == TouchInfo.Began)
             {
-                bTapTrigger = true;
+                StartPos = AppUtil.GetTouchPosition();
+
+                // 自身が持つ矩形内がタップされていたときのみタップ開始とする.
+                Vector3 worldPos = Camera.main.ScreenToWorldPoint(StartPos);
+                if (this.boxCollider.OverlapPoint(worldPos))
+                {
+                    bTapTrigger = true;
+                }
             }
-        }
-        else if (info == TouchInfo.Ended && bTapTrigger)
-        {
-            bTapTrigger = false;
-
-            Vector3 endPos = AppUtil.GetTouchPosition();
-
-            // 指を動かした場合にのみ、オタマジャクシを移動させる。
-            if (StartPos != endPos)
+            else if (info == TouchInfo.Ended && bTapTrigger)
             {
-                Vector3 direction = (StartPos - endPos).normalized;
-                // 移動方向の確定.おたまじゃくしに伝える.
-                this.Tadpole.MoveDirection(direction);
+                bTapTrigger = false;
+
+                Vector3 endPos = AppUtil.GetTouchPosition();
+
+                // 指を動かした場合にのみ、オタマジャクシを移動させる。
+                if (StartPos != endPos)
+                {
+                    Vector3 direction = (StartPos - endPos).normalized;
+                    // 移動方向の確定.おたまじゃくしに伝える.
+                    this.Tadpole.MoveDirection(direction);
+                }
             }
         }
     }

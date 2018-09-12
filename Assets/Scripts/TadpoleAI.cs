@@ -53,50 +53,53 @@ public class TadpoleAI : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update ()
+    void Update()
     {
-        // まずは状況判断. 今の状況を確認して反応速度の秒数分だけずらして行動させる.
-        float 反応速度 = Random.Range(Mathf.Lerp(Data.最小反応速度, Data.最大反応速度, Data.集中力), Data.最大反応速度);
-
-        //とりあえず適当な餌の位置に向かっていくだけ.
-        if(fieldFoods.Count > 0)
+        if (GameMain.bGameStart)
         {
-            if(this.Data.タップクールタイム < 0)
+            // まずは状況判断. 今の状況を確認して反応速度の秒数分だけずらして行動させる.
+            float 反応速度 = Random.Range(Mathf.Lerp(Data.最小反応速度, Data.最大反応速度, Data.集中力), Data.最大反応速度);
+
+            //とりあえず適当な餌の位置に向かっていくだけ.
+            if (fieldFoods.Count > 0)
             {
-                this.Data.タップクールタイム = this.Data.タップ連打可能秒数; //クールタイム回復.
-
-
-                //餌の方向へ向かう.
-                var direction = fieldFoods[0].transform.position - tadpole.transform.position;
-                direction.z = 0.0f;
-
-                // もしも餌と重なり合っていたら適当に上方向に動かす
-                if( direction.sqrMagnitude < Mathf.Epsilon)
+                if (this.Data.タップクールタイム < 0)
                 {
-                    direction.y = 1.0f;
+                    this.Data.タップクールタイム = this.Data.タップ連打可能秒数; //クールタイム回復.
+
+
+                    //餌の方向へ向かう.
+                    var direction = fieldFoods[0].transform.position - tadpole.transform.position;
+                    direction.z = 0.0f;
+
+                    // もしも餌と重なり合っていたら適当に上方向に動かす
+                    if (direction.sqrMagnitude < Mathf.Epsilon)
+                    {
+                        direction.y = 1.0f;
+                    }
+
+                    // 操作精度判定.
+                    // 進みたい方向に対して ある程度の範囲のブレが生じる.
+                    direction = GetPrecisionDir(direction);
+
+                    // 進める.
+                    tadpole.MoveDirection(direction.normalized);
                 }
-
-                // 操作精度判定.
-                // 進みたい方向に対して ある程度の範囲のブレが生じる.
-                direction = GetPrecisionDir(direction);
-
-                // 進める.
-                tadpole.MoveDirection(direction.normalized);
             }
-        }
 
-        // 
-        foreach(var tad in fieldTadpoles)
-        {
-            if(this.tadpole == tad) //自分自身は除く.
+            // 
+            foreach (var tad in fieldTadpoles)
             {
-                continue;
+                if (this.tadpole == tad) //自分自身は除く.
+                {
+                    continue;
+                }
+                // 自分より強いやつにタックル.
             }
-            // 自分より強いやつにタックル.
-        }
 
-        // クールタイムは毎秒減る.
-        this.Data.タップクールタイム -= Time.deltaTime;
+            // クールタイムは毎秒減る.
+            this.Data.タップクールタイム -= Time.deltaTime;
+        }
 	}
 
     /// <summary>
