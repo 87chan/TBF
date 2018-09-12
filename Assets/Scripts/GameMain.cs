@@ -261,13 +261,16 @@ public class GameMain : MonoBehaviour {
     /// </summary>
     void UpdateFoodCreate()
     {
-        NowFoodCreateInterval -= Time.deltaTime;
-        if(NowFoodCreateInterval < 0.0f)
+        if (bGameStart)
         {
-            NowFoodCreateInterval = FoodCreateInterval; //
-            for (int i = 0; i < IntervalFoodNum; ++i)
+            NowFoodCreateInterval -= Time.deltaTime;
+            if (NowFoodCreateInterval < 0.0f)
             {
-                this.CreateFood(AppUtil.GetRandomFieldPos(), true);
+                NowFoodCreateInterval = FoodCreateInterval; //
+                for (int i = 0; i < IntervalFoodNum; ++i)
+                {
+                    this.CreateFood(AppUtil.GetRandomFieldPos(), true);
+                }
             }
         }
     }
