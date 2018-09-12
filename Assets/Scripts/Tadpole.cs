@@ -3,29 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Tadpole : MonoBehaviour {
-
-public bool bPlayer01 = true;
+public class Tadpole : MonoBehaviour
+{
+    public bool bPlayer01 = true;
 
     // 成長段階の最大値
-    const int MAX_LEVEL = 4;
+    static public int MAX_LEVEL = 4;
 
-	// 前進時の加速度
-	const float ADVANCE_ACCEL = 10f;
+    // 前進時の加速度
+    const float ADVANCE_ACCEL = 600f;
 
     // 進行方向とは逆に働く減速度
-    const float INVERSE_ACCEL = 0.25f;
+    const float INVERSE_ACCEL = 15f;
 
     // 速度の最大値
-    const float MAX_SPEED = 10f;
+    const float MAX_SPEED = 600f;
 
     // 弾かれた際の加速度
-    const float POP_ACCEL_ACTIVE = 5f;
-    const float POP_ACCEL_PASSIVE = 10f;
+    const float POP_ACCEL_ACTIVE = 300f;
+    const float POP_ACCEL_PASSIVE = 600f;
 
     const float KOCKBACK_TIME = 0.1f;
 
-	int Level = 1;
+	public string PlayerName;
+	public int Level = 1;
 	bool bKockBack;
 	Vector3 Direction;
 	float CurrentSpeed;
@@ -82,13 +83,16 @@ public bool bPlayer01 = true;
     /// <param name="accel">加速量</param>
     public void MoveDirection(Vector3 direction,float accel = ADVANCE_ACCEL)
     {
-        //方向、加速度、回転の設定.
-        SetDirection(direction);
-        AddAccel(accel);
+        if (Time.timeScale > 0)
+        {
+            //方向、加速度、回転の設定.
+            SetDirection(direction);
+            AddAccel(accel);
 
-        float deg = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        deg -= 90;
-        transform.rotation = Quaternion.Euler(0, 0, deg);
+            float deg = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            deg -= 90;
+            transform.rotation = Quaternion.Euler(0, 0, deg);
+        }
     }
 
 	// Use this for initialization
@@ -108,7 +112,7 @@ public bool bPlayer01 = true;
 	void UpdateTransform()
 	{
         AddAccel(-INVERSE_ACCEL);
-        Vector3 velocity = CurrentSpeed * Direction;
+        Vector3 velocity = CurrentSpeed * Direction * Time.deltaTime;
         transform.position += velocity;
 
 		AdjustPosition();
