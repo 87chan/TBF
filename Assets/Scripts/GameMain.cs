@@ -13,6 +13,8 @@ public class GameMain : MonoBehaviour {
 	public int InitialFoodNum;
     public int PlayerNum;
     public int AINum;
+    public float FoodCreateInterval; //餌が再生成されるまでの秒数。
+    public int FoodMaxNum;           //最大餌数.
 
     // フィールド上に存在する餌.
     public List<Food> FieldFoods { get{ return fieldFoods; } }
@@ -30,9 +32,12 @@ public class GameMain : MonoBehaviour {
     int SHAKE_NUM_TO_RESTART = 4;
     int ShakeCount;
 
+    float NowFoodCreateInterval = 0.0f;
+
     void InitVariable()
     {
         ShakeCount = 0;
+        this.NowFoodCreateInterval = FoodCreateInterval;
     }
 
     /// <summary>
@@ -42,6 +47,11 @@ public class GameMain : MonoBehaviour {
     /// <param name="isPreDrop">true:影状態から始まる</param>
     public void CreateFood(Vector3 spawnPosition,bool isPreDrop)
     {
+        // 餌最大数.
+        if(FoodMaxNum <= FieldFoods.Count)
+        {
+            return;
+        }
         Food newFood = Instantiate(Food, spawnPosition, Quaternion.identity);
         newFood.Initialize(isPreDrop);
         newFood.OnDeadListeners += OnFoodDead;    //死亡時のコールバック.
@@ -166,7 +176,9 @@ public class GameMain : MonoBehaviour {
         this.CheckGameEnd();
 
 		this.CheckRestart();
-	}
+
+        this.UpdateFoodCreate();
+    }
 
     void CheckGameEnd()
     {
@@ -197,6 +209,22 @@ public class GameMain : MonoBehaviour {
             }
         }
         PrevAccel = Input.acceleration;
+    }
+
+    /// <summary>
+    /// 餌生成処理の更新.
+    /// </summary>
+    void UpdateFoodCreate()
+    {
+        NowFoodCreateInterval -= Time.deltaTime;
+        if(NowFoodCreateInterval < 0.0f)
+        {
+            NowFoodCreateInterval = FoodCreateInterval; //
+            for (int i = 0; i < InitialFoodNum; ++i)
+            {
+                this.CreateFood(AppUtil.GetRandomFieldPos(), true);
+            }
+        }
     }
 
     void Restart()
