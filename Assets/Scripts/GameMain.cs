@@ -9,6 +9,7 @@ public class GameMain : MonoBehaviour {
 	public Food Food;
     public TadpoleAI TadpoleAI;
     public TadpoleTouchController TadpolePlayer;
+    public GameObject CountDownText;
     public GameObject WinnerText;
 	public int InitialFoodNum;
     public int PlayerNum;
@@ -23,16 +24,22 @@ public class GameMain : MonoBehaviour {
     List<Tadpole> fieldTadpoles = new List<Tadpole>();
 
     Canvas Canvas;
+    GameObject CountDownTextInstance;
 
     // 前フレームの傾き
     Vector3 PrevAccel;
 
     int SHAKE_NUM_TO_RESTART = 4;
     int ShakeCount;
+    public static bool bGameStart;
+    float LeftTimeToStart;
+    const float TIME_TO_START = 4.0f;
 
     void InitVariable()
     {
         ShakeCount = 0;
+
+        LeftTimeToStart = TIME_TO_START;
     }
 
     /// <summary>
@@ -97,6 +104,12 @@ public class GameMain : MonoBehaviour {
         }
     }
 
+    void CreateCountDownText()
+    {
+        CountDownTextInstance = Instantiate(CountDownText, new Vector3(), Quaternion.identity);
+        CountDownTextInstance.transform.SetParent(Canvas.transform, false);
+    }
+
     void CreateWinnerText(Tadpole tadpole)
     {
         GameObject newObject = Instantiate(WinnerText, new Vector3(), Quaternion.identity);
@@ -158,15 +171,47 @@ public class GameMain : MonoBehaviour {
         {
             fieldTadpoles.Add(tadpole.GetComponent<Tadpole>());
         }
+
+        // カウントダウン用オブジェクトの生成
+        this.CreateCountDownText();
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        this.UpdateCountDown();
+
         this.CheckGameEnd();
 
 		this.CheckRestart();
 	}
+
+    void UpdateCountDown()
+    {
+        if (!bGameStart)
+        {
+            LeftTimeToStart -= Time.deltaTime;
+            if (LeftTimeToStart <= 0.0f)
+            {
+                bGameStart = true;
+
+                GameObject.Destroy(CountDownTextInstance);
+            }
+
+            if (CountDownTextInstance)
+            {
+                bool bShowStart = (LeftTimeToStart <= 1.0f);
+                CountDownTextInstance.transform.SetParent(Canvas.transform, false);
+                Text text = CountDownTextInstance.GetComponent<Text>();
+                text.text = (bShowStart) ? "Start" : ((int)LeftTimeToStart).ToString();
+
+                if (bShowStart)
+                {
+                    text.fontSize += 10;
+                }
+            }
+        }
+    }
 
     void CheckGameEnd()
     {
