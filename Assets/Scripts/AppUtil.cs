@@ -68,13 +68,15 @@ public static class AppUtil
     {
         Camera myCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         float height = myCamera.orthographicSize * 2.0f;
-        float width = (height / 16) * 9;
+        float width = height * ((float)Screen.width / (float)Screen.height);
 
         return new Vector2(width, height);
     }
 
     public static Vector3 GetRandomFieldPos()
     {
+        //#todo GetOrthographicSize()を使った場合、画面比率によってフィールドサイズが違うことになってしまう。
+        // ネットワーク対戦でそれは厳しいため、最終的には全員統一されたフィールド上で戦えるように工夫する必要がある。
         Vector2 size = AppUtil.GetOrthographicSize();
         Vector3 pos = new Vector3(Random.Range(0, size.x), Random.Range(0, size.y), 0);
         pos -= new Vector3(size.x * 0.5f, size.y * 0.5f, 0);
