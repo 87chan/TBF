@@ -11,17 +11,17 @@ public class Tadpole : MonoBehaviour
     static public int MAX_LEVEL = 4;
 
     // 前進時の加速度
-    const float ADVANCE_ACCEL = 600f;
+    const float ADVANCE_ACCEL = 400f;
 
     // 進行方向とは逆に働く減速度
-    const float INVERSE_ACCEL = 15f;
+    const float INVERSE_ACCEL = 10f;
 
     // 速度の最大値
-    const float MAX_SPEED = 600f;
+    const float MAX_SPEED = 400f;
 
     // 弾かれた際の加速度
-    const float POP_ACCEL_ACTIVE = 300f;
-    const float POP_ACCEL_PASSIVE = 600f;
+    const float POP_ACCEL_ACTIVE = 200f;
+    const float POP_ACCEL_PASSIVE = 400f;
 
     const float KOCKBACK_TIME = 0.1f;
 
