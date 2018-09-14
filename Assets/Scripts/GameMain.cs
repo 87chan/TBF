@@ -79,16 +79,19 @@ public class GameMain : MonoBehaviour {
 
     public void CreatePlayer(int playerNum)
     {
-        if(playerNum == 2)
+        // Canvas座標系でのサイズ.
+        Vector2 size = ((RectTransform)Canvas.transform).rect.size;
+
+        if (playerNum == 2)
         {
-            this.CreatePlayerCore(new Vector2(0, 320), new Vector2(720, 640), new Color(0.0f, 0.0f, 0.8f, 0.8f), "1P");
-            this.CreatePlayerCore(new Vector2(0, -320), new Vector2(720, 640), new Color(0.8f, 0.0f, 0.0f, 0.8f), "2P");
+            this.CreatePlayerCore(new Vector2(0,  size.y * 0.25f), new Vector2(size.x,size.y * 0.5f), new Color(0.0f, 0.0f, 0.8f, 0.8f), "1P");
+            this.CreatePlayerCore(new Vector2(0, -size.y * 0.25f), new Vector2(size.x,size.y * 0.5f), new Color(0.8f, 0.0f, 0.0f, 0.8f), "2P");
         }
         else if(playerNum == 3)
         {
-            this.CreatePlayerCore(new Vector2(0, 320), new Vector2(720, 640), new Color(0.0f, 0.0f, 0.8f, 0.8f), "1P");
-            this.CreatePlayerCore(new Vector2(-180, -320), new Vector2(360, 640), new Color(0.8f, 0.0f, 0.0f, 0.8f), "2P");
-            this.CreatePlayerCore(new Vector2(180, -320), new Vector2(360, 640), new Color(0.8f, 0.8f, 0.0f, 0.8f), "3P");
+            this.CreatePlayerCore(new Vector2(0, size.y * 0.25f), new Vector2(size.x, size.y * 0.5f), new Color(0.0f, 0.0f, 0.8f, 0.8f), "1P");
+            this.CreatePlayerCore(new Vector2(-size.x * 0.25f,-size.y * 0.25f), size * 0.5f, new Color(0.8f, 0.0f, 0.0f, 0.8f), "2P");
+            this.CreatePlayerCore(new Vector2( size.x * 0.25f,-size.y * 0.25f), size * 0.5f, new Color(0.8f, 0.8f, 0.0f, 0.8f), "3P");
         }
         else
         {

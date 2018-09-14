@@ -10,7 +10,7 @@ public class TadpoleTouchController : MonoBehaviour
 {
     public void ChangePlayerTouchInfo(Vector2 position, Vector2 size)
     {
-        this.transform.position = new Vector3(position.x, position.y, transform.position.z);
+        this.transform.localPosition = new Vector3(position.x, position.y, transform.localPosition.z);
         BoxCollider2D collider = this.GetComponent<BoxCollider2D>();
         collider.size = size;
     }
