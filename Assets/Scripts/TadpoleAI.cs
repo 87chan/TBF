@@ -29,7 +29,8 @@ public class TadpoleAI : MonoBehaviour
 
         public float 空間把握能力; //これが高いと、ちゃんと自分に近い餌を狙う(0～1).
 
-        public float タップ連打可能秒数; 　// 次のタップ操作までこの秒数指定分だけ待つ(秒数).
+        public float タップ連打可能秒数;  // 次のタップ操作までこの秒数指定分だけ待つ(秒数).
+        public float タップ連打可能最大;  // 次のタップ操作までこの最大秒数指定分だけ待つ(秒数).
         public float タップクールタイム;  // 次のタップ操作までのクールタイム(秒数)
     }
 
@@ -48,6 +49,7 @@ public class TadpoleAI : MonoBehaviour
         // #todo データ仮適当設定.
         this.Data.集中力 = 0.8f;
         this.Data.タップ連打可能秒数 = 0.7f;
+        this.Data.タップ連打可能最大 = 1.2f;
         this.Data.操作精度 = 0.75f;
         this.Data.操作精度のブレ度数 = 10.0f; 
     }
@@ -63,39 +65,41 @@ public class TadpoleAI : MonoBehaviour
             //とりあえず適当な餌の位置に向かっていくだけ.
             if (fieldFoods.Count > 0)
             {
-                if (this.Data.タップクールタイム < 0)
+                var minPosition = fieldFoods[0].transform.position;
+                var minDistance = (fieldFoods[0].transform.position - this.tadpole.transform.position).sqrMagnitude;
+                //自分に一番近い餌を狙う. #todo もっと馬鹿にできる
+                foreach (var food in fieldFoods)
                 {
-                    this.Data.タップクールタイム = this.Data.タップ連打可能秒数; //クールタイム回復.
-
-
-                    //餌の方向へ向かう.
-                    var direction = fieldFoods[0].transform.position - tadpole.transform.position;
-                    direction.z = 0.0f;
-
-                    // もしも餌と重なり合っていたら適当に上方向に動かす
-                    if (direction.sqrMagnitude < Mathf.Epsilon)
+                    // 自分より強いやつにタックル.
+                    var len = (food.transform.position - this.tadpole.transform.position).sqrMagnitude;
+                    if(minDistance > len)
                     {
-                        direction.y = 1.0f;
+                        minDistance = len;
+                        minPosition = food.transform.position;
                     }
-
-                    // 操作精度判定.
-                    // 進みたい方向に対して ある程度の範囲のブレが生じる.
-                    direction = GetPrecisionDir(direction);
-
-                    // 進める.
-                    tadpole.MoveDirection(direction.normalized);
                 }
+                MoveTarget(minPosition);
+//                MoveTarget(fieldFoods[0].transform.position);
             }
-
-            // 
-            foreach (var tad in fieldTadpoles)
+            else //自分より強いやつにタックル
             {
-                if (this.tadpole == tad) //自分自身は除く.
+                // 
+                foreach (var tad in fieldTadpoles)
                 {
-                    continue;
+                    if (this.tadpole == tad) //自分自身は除く.
+                    {
+                        continue;
+                    }
+                    // 自分より強いやつにタックル.
+                    if(this.tadpole.Level < tad.Level)
+                    {
+                        MoveTarget(tad.transform.position);
+                        break;
+                    }
                 }
-                // 自分より強いやつにタックル.
             }
+
+
 
             // クールタイムは毎秒減る.
             this.Data.タップクールタイム -= Time.deltaTime;
@@ -114,6 +118,35 @@ public class TadpoleAI : MonoBehaviour
         return  q * direction;
     }
 
+    /// <summary>
+    /// 指定位置に向かって移動する
+    /// タップクールタイムを考慮するため、現状は毎フレーム設定する必要がある.
+    /// </summary>
+    private void MoveTarget(Vector3 target)
+    {
+        if (this.Data.タップクールタイム < 0.0f)
+        {
+            this.Data.タップクールタイム = Random.Range(this.Data.タップ連打可能秒数,this.Data.タップ連打可能最大); //クールタイム回復.
+
+            //餌の方向へ向かう.
+            var direction = target - tadpole.transform.position;
+            direction.z = 0.0f;
+
+            // もしも重なり合っていたら適当に上方向に動かす
+            if (direction.sqrMagnitude < Mathf.Epsilon)
+            {
+                direction.y = 1.0f;
+            }
+
+            // 操作精度判定.
+            // 進みたい方向に対して ある程度の範囲のブレが生じる.
+            direction = GetPrecisionDir(direction);
+
+            // 進める.
+            this.tadpole.MoveDirection(direction.normalized);
+        }      
+    }
+
     public DATA Data;       // 
     Tadpole tadpole; // 操作対象.
 
@@ -123,4 +156,6 @@ public class TadpoleAI : MonoBehaviour
     private List<Food> fieldFoods;
     // フィールド上に存在するおたまじゃくし
     private List<Tadpole> fieldTadpoles;
+
+    private Vector3 targetPos;
 }
