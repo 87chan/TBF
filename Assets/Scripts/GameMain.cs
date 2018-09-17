@@ -278,11 +278,18 @@ public class GameMain : MonoBehaviour {
         }
     }
 
-    void Restart()
+    public void Restart()
     {
         SceneManager.LoadScene("MainScene");
         Time.timeScale = 1.0f;
         bGameStart = false;
+
+        this.InitVariable();
+
+        foreach(var tadpole in FieldTadpoles)
+        {
+            tadpole.Level = 0;
+        }
     }
 
     void OnFoodDead(Food food)
